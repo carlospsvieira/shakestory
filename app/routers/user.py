@@ -1,9 +1,10 @@
 from fastapi import APIRouter, Depends, HTTPException, status, Path
 from fastapi.responses import JSONResponse
 from sqlalchemy.orm import Session
+from app.models.requests import UserCreate, UserLogin, UserResponse
 from app.db.session import get_db
 from app.services import user_service
-from app.models.requests import UserCreate, UserResponse
+from app.dependencies.authentication import authenticate_user
 
 router = APIRouter()
 
@@ -29,6 +30,27 @@ async def register_user(user: UserCreate, db: Session = Depends(get_db)):
     )
 
 
+@router.post("/login", response_model=UserResponse)
+async def login(user_login: UserLogin, db: Session = Depends(get_db)):
+    token = authenticate_user(db, user_login)
+    if token is None:
+        raise HTTPException(status_code=401, detail="Invalid credentials")
+
+    user = user_service.get_user_by_username(db, user_login.username)
+    user_response = UserResponse(
+        id=user.id, username=user.username, email=user.email
+    ).model_dump()
+
+    return JSONResponse(
+        status_code=status.HTTP_200_OK,
+        content={
+            "message": "User logged in successfully",
+            "token": token["access_token"],
+            "user": user_response,
+        },
+    )
+
+
 @router.delete("/users/{user_id}", response_model=dict)
 async def delete_user(
     user_id: int = Path(..., title="The ID of the user to delete", ge=1),
@@ -42,8 +64,5 @@ async def delete_user(
     user_service.delete_user(db, user_id)
 
     return JSONResponse(
-        status_code=status.HTTP_200_OK,
-        content={
-            "message": "User was deleted"
-        }
+        status_code=status.HTTP_200_OK, content={"message": "User was deleted"}
     )

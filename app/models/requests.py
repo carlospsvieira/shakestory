@@ -13,6 +13,11 @@ class UserResponse(BaseModel):
     email: str
 
 
+class UserLogin(BaseModel):
+    username: str
+    password: str
+
+
 class StoryCreate(BaseModel):
     title: str
     genre: str

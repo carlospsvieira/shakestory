@@ -1,4 +1,3 @@
-from fastapi import HTTPException
 from sqlalchemy.orm import Session
 from app.db.base import User
 from app.models.requests import UserCreate
@@ -6,7 +5,13 @@ import bcrypt
 
 
 def get_user_by_email(db: Session, email: str):
-    return db.query(User).filter(User.email == email).first()
+    user = db.query(User).filter(User.email == email).first()
+    return user
+
+
+def get_user_by_username(db: Session, username: str):
+    user = db.query(User).filter(User.username == username).first()
+    return user
 
 
 def get_user_by_id(db: Session, user_id: int):
