@@ -41,4 +41,9 @@ async def delete_user(
 
     user_service.delete_user(db, user_id)
 
-    return {"message": "User deleted successfully"}
+    return JSONResponse(
+        status_code=status.HTTP_200_OK,
+        content={
+            "message": "User was deleted"
+        }
+    )
