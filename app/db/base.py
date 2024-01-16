@@ -1,3 +1,5 @@
+# app/models/base.py
+
 from sqlalchemy import Column, Integer, String, ForeignKey, DateTime, Boolean
 from sqlalchemy.orm import relationship
 from .session import Base
@@ -23,7 +25,7 @@ class Story(Base):
     creation_date = Column(DateTime, default=datetime.utcnow)
     user_id = Column(Integer, ForeignKey("users.id"))
 
-    segments = relationship("Segment", back_populates="story")
+    segments = relationship("Segment", back_populates="story", foreign_keys="Segment.story_id")
 
 
 class Segment(Base):
@@ -37,5 +39,5 @@ class Segment(Base):
     upvotes = Column(Integer, default=0)
     downvotes = Column(Integer, default=0)
 
-    story = relationship("Story", back_populates="segments")
+    story = relationship("Story", back_populates="segments", foreign_keys="Segment.story_id")
     user = relationship("User")
