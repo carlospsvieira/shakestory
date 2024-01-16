@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status, Path
 from fastapi.responses import JSONResponse
 from sqlalchemy.orm import Session
 from app.db.session import get_db
@@ -29,3 +29,18 @@ async def register_user(user: UserCreate, db: Session = Depends(get_db)):
             "user": user_dict,
         },
     )
+
+
+@router.delete("/users/{user_id}", response_model=dict)
+async def delete_user(
+    user_id: int = Path(..., title="The ID of the user to delete", ge=1),
+    db: Session = Depends(get_db),
+):
+    user = user_service.get_user_by_id(db, user_id)
+
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    user_service.delete_user(db, user_id)
+
+    return {"message": "User deleted successfully"}
