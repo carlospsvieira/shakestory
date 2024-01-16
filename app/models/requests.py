@@ -11,7 +11,6 @@ class UserResponse(BaseModel):
     id: int
     username: str
     email: str
-    profile_picture: str = None
 
 
 class StoryCreate(BaseModel):
