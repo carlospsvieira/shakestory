@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from app.db.session import engine
 from app.db.session import Base
+from app.routes.routes import routes
 
 app = FastAPI()
 
@@ -10,6 +11,4 @@ def init_db():
 
 init_db()
 
-@app.get("/")
-def read_root():
-    return {"message": "hello Shakestory, now running with db"}
+routes(app)
