@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, status, Path
+from fastapi import APIRouter, Depends, Form, HTTPException, status, Path
 from fastapi.responses import JSONResponse
 from sqlalchemy.orm import Session
 from app.models.requests import UserCreate, UserLogin, UserResponse
@@ -51,16 +51,23 @@ async def login(user_login: UserLogin, db: Session = Depends(get_db)):
     )
 
 
+@router.put("/users/{user_id}/username", response_model=UserResponse)
+async def update_username(
+    user_id: int = Path(..., title="The ID of the user to update", ge=1),
+    new_username: str = Form(..., title="The new username"),
+    db: Session = Depends(get_db),
+):
+    updated_user = user_service.update_username(db, user_id, new_username)
+    if updated_user:
+        return updated_user
+    raise HTTPException(status_code=404, detail="User not found")
+
+
 @router.delete("/users/{user_id}", response_model=dict)
 async def delete_user(
     user_id: int = Path(..., title="The ID of the user to delete", ge=1),
     db: Session = Depends(get_db),
 ):
-    user = user_service.get_user_by_id(db, user_id)
-
-    if not user:
-        raise HTTPException(status_code=404, detail="User not found")
-
     user_service.delete_user(db, user_id)
 
     return JSONResponse(
