@@ -1,5 +1,3 @@
-# app/models/base.py
-
 from sqlalchemy import Column, Integer, String, ForeignKey, DateTime, Boolean
 from sqlalchemy.orm import relationship
 from .session import Base
@@ -14,6 +12,9 @@ class User(Base):
     email = Column(String, unique=True, index=True)
     password = Column(String)
 
+    class Config:
+        orm_mode = True
+
 
 class Story(Base):
     __tablename__ = "stories"
@@ -25,7 +26,12 @@ class Story(Base):
     creation_date = Column(DateTime, default=datetime.utcnow)
     user_id = Column(Integer, ForeignKey("users.id"))
 
-    segments = relationship("Segment", back_populates="story", foreign_keys="Segment.story_id")
+    segments = relationship(
+        "Segment", back_populates="story", foreign_keys="Segment.story_id"
+    )
+
+    class Config:
+        orm_mode = True
 
 
 class Segment(Base):
@@ -39,5 +45,10 @@ class Segment(Base):
     upvotes = Column(Integer, default=0)
     downvotes = Column(Integer, default=0)
 
-    story = relationship("Story", back_populates="segments", foreign_keys="Segment.story_id")
+    story = relationship(
+        "Story", back_populates="segments", foreign_keys="Segment.story_id"
+    )
     user = relationship("User")
+
+    class Config:
+        orm_mode = True
