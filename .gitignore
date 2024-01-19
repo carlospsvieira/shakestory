@@ -139,3 +139,5 @@ cython_debug/
 #Alembic folder and ini file
 alembic/
 *.ini
+
+*.db
