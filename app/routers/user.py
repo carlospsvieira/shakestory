@@ -52,14 +52,17 @@ async def login(user_login: UserLogin, db: Session = Depends(get_db)):
 
 
 @router.put("/users/{user_id}/username", response_model=UserResponse)
-async def update_username(
+async def update_password(
     user_id: int = Path(..., title="The ID of the user to update", ge=1),
-    new_username: str = Form(..., title="The new username"),
+    new_password: str = Form(..., title="The new password"),
     db: Session = Depends(get_db),
 ):
-    updated_user = user_service.update_username(db, user_id, new_username)
+    updated_user = user_service.update_password(db, user_id, new_password)
     if updated_user:
-        return updated_user
+        return JSONResponse(
+            status_code=status.HTTP_204_NO_CONTENT,
+            content={"message": "Password updated"},
+        )
     raise HTTPException(status_code=404, detail="User not found")
 
 

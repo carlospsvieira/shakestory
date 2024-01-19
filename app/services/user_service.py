@@ -29,10 +29,11 @@ def create_user(db: Session, user: UserCreate):
     return db_user
 
 
-def update_username(db: Session, user_id: int, new_username: str):
+def update_password(db: Session, user_id: int, new_password: str):
     user = db.query(User).filter(User.id == user_id).first()
+    hashed_password = bcrypt.hashpw(new_password.encode("utf-8"), bcrypt.gensalt())
     if user:
-        user.username = new_username
+        user.password = hashed_password
         db.commit()
         db.refresh(user)
         return user
