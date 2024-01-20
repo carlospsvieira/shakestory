@@ -22,6 +22,7 @@ class Story(Base):
     id = Column(Integer, primary_key=True, index=True)
     title = Column(String, unique=True, index=True)
     genre = Column(String)
+    content = Column(String, nullable=True)
     current_segment_id = Column(Integer, ForeignKey("segments.id"))
     creation_date = Column(DateTime, default=datetime.utcnow)
     user_id = Column(Integer, ForeignKey("users.id"))

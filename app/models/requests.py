@@ -1,4 +1,5 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
+
 
 class UserCreate(BaseModel):
     username: str
@@ -20,6 +21,7 @@ class UserResponse(BaseModel):
 class StoryCreate(BaseModel):
     title: str
     genre: str
+    content: str = Field(..., max_length=500)
 
 
 class StoryResponse(BaseModel):
