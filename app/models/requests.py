@@ -1,6 +1,5 @@
 from pydantic import BaseModel
 
-
 class UserCreate(BaseModel):
     username: str
     email: str
@@ -25,11 +24,11 @@ class StoryCreate(BaseModel):
 
 class StoryResponse(BaseModel):
     id: int
-    title: str
-    genre: str
     current_segment_id: int
-    creation_date: str
-    user: UserResponse
+    user_id: int
+
+    class Config:
+        orm_mode = True
 
 
 class SegmentCreate(BaseModel):

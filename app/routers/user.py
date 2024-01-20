@@ -30,28 +30,22 @@ async def register_user(user: UserCreate, db: Session = Depends(get_db)):
     )
 
 
-@router.post("/login", response_model=UserResponse)
+@router.post("/login", response_model=dict)
 async def login(user_login: UserLogin, db: Session = Depends(get_db)):
     token = authenticate_user(db, user_login)
     if token is None:
         raise HTTPException(status_code=401, detail="Invalid credentials")
 
-    user = user_service.get_user_by_username(db, user_login.username)
-    user_response = UserResponse(
-        id=user.id, username=user.username, email=user.email
-    ).model_dump()
-
     return JSONResponse(
         status_code=status.HTTP_200_OK,
         content={
             "message": "User logged in successfully",
-            "token": token["access_token"],
-            "user": user_response,
+            "token": token["access_token"]
         },
     )
 
 
-@router.put("/users/{user_id}/username", response_model=UserResponse)
+@router.put("/users/{user_id}/password", response_model=UserResponse)
 async def update_password(
     user_id: int = Path(..., title="The ID of the user to update", ge=1),
     new_password: str = Form(..., title="The new password"),

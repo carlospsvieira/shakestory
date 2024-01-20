@@ -8,8 +8,8 @@ def get_story_by_title(db: Session, title: str):
     return story
 
 
-def create_story(db: Session, story: StoryCreate):
-    db_story = Story(title=StoryCreate.title, genre=StoryCreate.genre)
+def create_story(db: Session, story: StoryCreate, user_id: int):
+    db_story = Story(title=story.title, genre=story.genre, user_id=user_id)
     db.add(db_story)
     db.commit()
     db.refresh(db_story)

@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, ForeignKey, DateTime, Boolean
+from sqlalchemy import Column, Integer, LargeBinary, String, ForeignKey, DateTime, Boolean
 from sqlalchemy.orm import relationship
 from .session import Base
 from datetime import datetime
@@ -10,7 +10,7 @@ class User(Base):
     id = Column(Integer, primary_key=True, index=True)
     username = Column(String, unique=True, index=True)
     email = Column(String, unique=True, index=True)
-    password = Column(String)
+    password = Column(LargeBinary)
 
     class Config:
         orm_mode = True
