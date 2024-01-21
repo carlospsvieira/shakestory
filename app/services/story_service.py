@@ -1,3 +1,4 @@
+from fastapi import HTTPException
 from app.db.base import Story
 from app.models.requests import StoryCreate
 from sqlalchemy.orm import Session
@@ -16,3 +17,10 @@ def create_story(db: Session, story: StoryCreate, user_id: int):
     db.commit()
     db.refresh(db_story)
     return db_story
+
+def delete_story(db: Session, story_id: int):
+    story = db.query(Story).filter(Story.id == story_id).first()
+    if not story:
+        raise HTTPException(status_code=404, detail="Story not found")
+    db.delete(story)
+    db.commit()

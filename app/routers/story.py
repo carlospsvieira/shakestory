@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, Path, status
 from fastapi.responses import JSONResponse
 from sqlalchemy.orm import Session
 from app.db.base import User
@@ -34,4 +34,16 @@ async def new_story(
             "message": "Story created successfully",
             "story": story_response,
         },
+    )
+
+
+@router.delete("/stories/{story_id}", response_model=dict)
+async def delete_story(
+    story_id: int = Path(..., title="The ID of the story to delete", ge=1),
+    db: Session = Depends(get_db),
+):
+    story_service.delete_story(db, story_id)
+
+    return JSONResponse(
+        status_code=status.HTTP_200_OK, content={"message": "Story was deleted"}
     )
