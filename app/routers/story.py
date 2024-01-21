@@ -6,6 +6,7 @@ from app.db.session import get_db
 from app.dependencies.authentication import get_current_user
 from app.services import story_service
 from app.models.requests import StoryCreate, StoryResponse, UserResponse
+from app.utils.helpers import validate_story_content
 
 router = APIRouter()
 
@@ -19,6 +20,9 @@ async def new_story(
     existing_story = story_service.get_story_by_title(db, story.title)
     if existing_story:
         raise HTTPException(status_code=400, detail="Title already registered")
+
+    if not validate_story_content(story.content):
+        raise HTTPException(status_code=400, detail="Invalid story content")
 
     created_story = story_service.create_story(db, story, current_user.id)
 
