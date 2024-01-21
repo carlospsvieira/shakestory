@@ -47,6 +47,9 @@ async def update_title(
     new_title: str = Form(..., title="The new title"),
     db: Session = Depends(get_db),
 ):
+    if len(new_title) > 100:
+        raise HTTPException(status_code=400, detail="Title has too many characters")
+
     updated_story = story_service.update_title(db, story_id, new_title)
 
     return JSONResponse(
