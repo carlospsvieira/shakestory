@@ -19,7 +19,7 @@ class UserResponse(BaseModel):
 
 
 class StoryCreate(BaseModel):
-    title: str
+    title: str = Field(..., max_length=100)
     genre: str
     content: str = Field(..., max_length=500)
 
