@@ -18,6 +18,17 @@ def create_story(db: Session, story: StoryCreate, user_id: int):
     db.refresh(db_story)
     return db_story
 
+
+def update_title(db: Session, story_id: int, title: str):
+    story = db.query(Story).filter(Story.id == story_id).first()
+    if story:
+        story.title = title
+        db.commit()
+        db.refresh(story)
+        return story
+    return None
+
+
 def delete_story(db: Session, story_id: int):
     story = db.query(Story).filter(Story.id == story_id).first()
     if not story:

@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, Path, status
+from fastapi import APIRouter, Depends, Form, HTTPException, Path, status
 from fastapi.responses import JSONResponse
 from sqlalchemy.orm import Session
 from app.db.base import User
@@ -38,6 +38,20 @@ async def new_story(
             "message": "Story created successfully",
             "story": story_response,
         },
+    )
+
+
+@router.put("/stories/{story_id}/title", response_model=dict)
+async def update_title(
+    story_id: int = Path(..., title="The ID of the title to update", ge=1),
+    new_title: str = Form(..., title="The new title"),
+    db: Session = Depends(get_db),
+):
+    updated_story = story_service.update_title(db, story_id, new_title)
+
+    return JSONResponse(
+        status_code=status.HTTP_200_OK,
+        content={"title": updated_story.title, "message": "Title updated!"},
     )
 
 
