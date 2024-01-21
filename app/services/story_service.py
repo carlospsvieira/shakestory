@@ -29,6 +29,16 @@ def update_title(db: Session, story_id: int, title: str):
     return None
 
 
+def update_story_content(db: Session, story_id: int, content: str):
+    story = db.query(Story).filter(Story.id == story_id).first()
+    if story:
+        story.content = content
+        db.commit()
+        db.refresh(story)
+        return story
+    return None
+
+
 def delete_story(db: Session, story_id: int):
     story = db.query(Story).filter(Story.id == story_id).first()
     if not story:

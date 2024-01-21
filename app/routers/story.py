@@ -57,6 +57,22 @@ async def update_title(
         content={"title": updated_story.title, "message": "Title updated!"},
     )
 
+@router.put("/stories/{story_id}/content", response_model=dict)
+async def update_story_content(
+    story_id: int = Path(..., title="The ID of the title to update", ge=1),
+    new_content: str = Form(..., title="The new content"),
+    db: Session = Depends(get_db),
+):
+    if len(new_content) > 500:
+        raise HTTPException(status_code=400, detail="Content has too many characters")
+
+    updated_story = story_service.update_story_content(db, story_id, new_content)
+
+    return JSONResponse(
+        status_code=status.HTTP_200_OK,
+        content={"content": updated_story.content, "message": "Content updated!"},
+    )
+
 
 @router.delete("/stories/{story_id}", response_model=dict)
 async def delete_story(
