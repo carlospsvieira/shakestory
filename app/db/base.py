@@ -42,7 +42,7 @@ class Segment(Base):
     __tablename__ = "segments"
 
     id = Column(Integer, primary_key=True, index=True)
-    content = Column(String)
+    content = Column(String, nullable=False)
     story_id = Column(Integer, ForeignKey("stories.id"))
     user_id = Column(Integer, ForeignKey("users.id"))
     contribution_date = Column(DateTime, default=datetime.utcnow)

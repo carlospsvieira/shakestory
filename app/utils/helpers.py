@@ -1,7 +1,7 @@
 import re
 
 
-def validate_story_content(content: str):
+def validate_content(content: str):
     if len(re.findall(r"[a-zA-Z]", content)) < 10:
         return False
 

@@ -31,19 +31,15 @@ class StoryResponse(BaseModel):
     current_segment_id: int
     user_id: int
 
-    class Config:
-        orm_mode = True
-
 
 class SegmentCreate(BaseModel):
-    content: str
+    content: str = Field(..., max_length=500)
 
 
 class SegmentResponse(BaseModel):
     id: int
     content: str
     story_id: int
-    user: UserResponse
     contribution_date: str
     upvotes: int
     downvotes: int
