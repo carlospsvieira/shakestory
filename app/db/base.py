@@ -1,5 +1,8 @@
+from sqlalchemy import Enum as SQLAlchemyEnum
 from sqlalchemy import Column, Integer, LargeBinary, String, ForeignKey, DateTime, Boolean
 from sqlalchemy.orm import relationship
+
+from app.enums.story_genre import StoryGenre
 from .session import Base
 from datetime import datetime
 
@@ -21,7 +24,7 @@ class Story(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     title = Column(String, unique=True, index=True)
-    genre = Column(String)
+    genre = Column(SQLAlchemyEnum(StoryGenre))
     content = Column(String, nullable=True)
     current_segment_id = Column(Integer, ForeignKey("segments.id"))
     creation_date = Column(DateTime, default=datetime.utcnow)

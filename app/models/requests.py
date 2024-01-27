@@ -1,5 +1,7 @@
 from pydantic import BaseModel, Field
 
+from app.enums.story_genre import StoryGenre
+
 
 class UserCreate(BaseModel):
     username: str
@@ -20,7 +22,7 @@ class UserResponse(BaseModel):
 
 class StoryCreate(BaseModel):
     title: str = Field(..., max_length=100)
-    genre: str
+    genre: StoryGenre
     content: str = Field(..., max_length=500)
 
 
