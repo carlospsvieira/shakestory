@@ -30,7 +30,9 @@ async def new_segment(
         content=created_segment.content,
         user_id=current_user.id,
         story_id=story_id,
-        contribution_date=created_segment.contribution_date.strftime("%Y-%m-%d %H:%M:%S"),
+        contribution_date=created_segment.contribution_date.strftime(
+            "%Y-%m-%d %H:%M:%S"
+        ),
         upvotes=created_segment.upvotes,
         downvotes=created_segment.downvotes,
     ).model_dump()
@@ -43,6 +45,7 @@ async def new_segment(
         },
     )
 
+
 @router.put("/segments/{segment_id}/content", response_model=dict)
 async def update_segment_content(
     segment_id: int = Path(..., title="The ID of the segment to update", ge=1),
@@ -52,9 +55,23 @@ async def update_segment_content(
     if len(new_content) > 500:
         raise HTTPException(status_code=400, detail="Content has too many characters")
 
-    updated_segment = segment_service.update_segment_content(db, segment_id, new_content)
+    updated_segment = segment_service.update_segment_content(
+        db, segment_id, new_content
+    )
 
     return JSONResponse(
         status_code=status.HTTP_200_OK,
         content={"content": updated_segment.content, "message": "Content updated!"},
+    )
+
+
+@router.delete("/segments/{segment_id}", response_model=dict)
+async def delete_segment(
+    segment_id: int = Path(..., title="The ID of the segment to delete", ge=1),
+    db: Session = Depends(get_db),
+):
+    segment_service.delete_segment(db, segment_id)
+
+    return JSONResponse(
+        status_code=status.HTTP_200_OK, content={"message": "Segment was deleted"}
     )
