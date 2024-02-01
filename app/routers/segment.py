@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, Path, status
+from fastapi import APIRouter, Depends, Form, HTTPException, Path, status
 from fastapi.responses import JSONResponse
 from sqlalchemy.orm import Session
 from app.db.base import User
@@ -41,4 +41,20 @@ async def new_segment(
             "message": "Segment created successfully",
             "story": segment_response,
         },
+    )
+
+@router.put("/segments/{segment_id}/content", response_model=dict)
+async def update_segment_content(
+    segment_id: int = Path(..., title="The ID of the segment to update", ge=1),
+    new_content: str = Form(..., title="The new content"),
+    db: Session = Depends(get_db),
+):
+    if len(new_content) > 500:
+        raise HTTPException(status_code=400, detail="Content has too many characters")
+
+    updated_segment = segment_service.update_segment_content(db, segment_id, new_content)
+
+    return JSONResponse(
+        status_code=status.HTTP_200_OK,
+        content={"content": updated_segment.content, "message": "Content updated!"},
     )
