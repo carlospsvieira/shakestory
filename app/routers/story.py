@@ -59,7 +59,7 @@ async def update_title(
 
 @router.put("/stories/{story_id}/content", response_model=dict)
 async def update_story_content(
-    story_id: int = Path(..., title="The ID of the title to update", ge=1),
+    story_id: int = Path(..., title="The ID of the story to update", ge=1),
     new_content: str = Form(..., title="The new content"),
     db: Session = Depends(get_db),
 ):
